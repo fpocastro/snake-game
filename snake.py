@@ -21,69 +21,62 @@ class Queue:
     def get(self):
         return self.elements.popleft()
 
-class Directions(Enum):
-    N = [-1, 0]
-    E = [0, 1]
-    S = [1, 0]
-    W = [0, -1]
-
-class Position(object):
-    
-    def __init__(self, i, j, name):
-        self.i = i
-        self.j = j
-        self.name = name
-        self.neighbors = []
-
-    def __repr__(self):
-        return "[" + str(self.i) + ", " + str(self.j) + "]"
-
-    def __str__(self):
-        return self.name
-
 class Snake(object):
 
-    def __init__(self, i, j, direction):
-        self.direction = direction
-        self.setBody(i, j)
+    def __init__(self, i, j, length):
+        self.length = length
+        self.head = [i, j]
+        self.body = []
+        self.setBody(i, j + 1)
 
-    def setBody(self, i, j):
-        self.body = [[i, j + idx] for idx in range(0, 4)]
+    def setBody(self, startI, startJ):
+        self.body = [[startI, startJ + idx] for idx in range(0, self.length - 1)]
 
-    def walk(self, boundI, boundJ):
-        currPos = self.body[0]
-        newI = currPos[0] + self.direction.value[0]
-        newJ = currPos[1] + self.direction.value[1]
-        if 0 <= newI < boundI and 0 <= newJ < boundJ and not [newI, newJ] in self.body:
-            for i in range(len(self.body) - 1, 0, -1):
-                self.body[i] = self.body[i - 1]
-            self.body[0] = [newI, newJ]
-            return True
-        return False
-
-    def walkIndex(self, pos):
-        currPos = self.body[0]
+    def move(self, food, board):
+        pos = self.getMovement(food, board)
+        if pos == []:
+            # TODO Think about best random movement
+            neighbors = self.getNeighbors(self.head, board)
+            pos = neighbors[randint(0, len(neighbors) - 1)]
         for i in range(len(self.body) - 1, 0, -1):
             self.body[i] = self.body[i - 1]
-            self.body[0] = [pos.i, pos.j]
-
+        self.body[0] = self.head
+        self.head = pos
+    
     def eat(self, lastPos):
         self.body.append(lastPos)
 
-    def findFood(self, goal, board):
+    def getMovement(self, goal, board):
         frontier = Queue()
         frontier.put(goal)
         came_from = {}
-        came_from[goal] = None
+        came_from[str(goal)] = None
         while not frontier.empty():
             current = frontier.get()
-            for next in current.neighbors:
-                if next not in came_from:
+            neighbors = self.getNeighbors(current, board)
+            for next in neighbors:
+                if str(next) not in came_from:
                     frontier.put(next)
-                    came_from[next] = current
-        head = self.body[0]
-        return came_from[board[head[0]][head[1]]]
+                    came_from[str(next)] = current
+        try:
+            movement = came_from[str(self.head)]
+        except:
+            movement = []
+        return movement
 
+    def getNeighbors(self, pos, board):
+        neighbors = []
+        i = pos[0]
+        j = pos[1]
+        if 0 <= i - 1 < len(board) and 0 <= j < len(board[0]) and board[i - 1][j] != 2:
+            neighbors.append([i - 1, j])
+        if 0 <= i + 1 < len(board) and 0 <= j < len(board[0]) and board[i + 1][j] != 2:
+            neighbors.append([i + 1, j])
+        if 0 <= i < len(board) and 0 <= j - 1 < len(board[0]) and board[i][j - 1] != 2:
+            neighbors.append([i, j - 1])
+        if 0 <= i < len(board) and 0 <= j + 1 < len(board[0]) and board[i][j + 1] != 2:
+            neighbors.append([i, j + 1])
+        return neighbors
 
 class Board(object):
 
@@ -91,116 +84,86 @@ class Board(object):
         self.width = width
         self.height = height
         self.setBoard(width, height)
+        self.points = 0
 
     def __str__(self):
-        horizontal = "".join(["-"] * (len(self.board[0]) + 2))
+        horizontal = "".join(["\x1b[0;34;44m \x1b[0m"] * (len(self.board[0]) + 2))
         string = horizontal + "\n"
-        string += "|" + '\n|'.join([''.join([str(j) for j in i]) + "|" for i in self.board])
+        string += "\x1b[0;34;44m \x1b[0m" + '\n\x1b[0;34;44m \x1b[0m'.join([''.join([self.getPositionRepr(j) for j in i]) + "\x1b[0;34;44m \x1b[0m" for i in self.board])
         string += "\n" + horizontal
+        string += "\nPoints: " + str(self.points)
         return string
 
+    def getPositionRepr(self, pos):
+        return ["\x1b[0;30;40m \x1b[0m", "\x1b[0;37;42m \x1b[0m", "\x1b[0;37;47m \x1b[0m", "\x1b[0;31;41m \x1b[0m"][pos]
+    
     def setBoard(self, width, height):
-        self.board = [[Position(i, j, " ") for j in range(width)] for i in range(height)]
+        self.board = [[0 for j in range(width)] for i in range(height)]
 
     def setSnake(self, snake):
         self.snake = snake
         self.updateSnake()
-        self.generateFood()
-
-    def updateSnake(self):
-        for b in self.snake.body:
-            self.board[b[0]][b[1]] = Position(b[0], b[1], "O")
 
     def moveSnake(self):
-        lastPos = self.snake.body[-1]
-        if self.snake.walk(len(self.board), len(self.board[0])):
-            firstPos = self.snake.body[0]
-            self.board[firstPos[0]][firstPos[1]] = Position(firstPos[0], firstPos[1], "O")
-            if(firstPos == self.food):
-                self.snake.eat(lastPos)
-            else:
-                self.board[lastPos[0]][lastPos[1]] = Position(lastPos[0], lastPos[1], " ")
-            return True
-        return False
-    
-    def moveSnakeIndex(self, pos):
-        lastPos = self.snake.body[-1]
-        self.snake.walkIndex(pos)
-        firstPos = self.snake.body[0]
-        self.board[firstPos[0]][firstPos[1]] = Position(firstPos[0], firstPos[1], "O")
-        if(pos == self.food):
-            self.snake.eat(lastPos)
+        tail = self.snake.body[-1]
+        self.snake.move(self.food, self.board)
+        if(self.snake.head == self.food):
+            self.points += 1
+            self.snake.eat(tail)
             self.generateFood()
         else:
-            self.board[lastPos[0]][lastPos[1]] = Position(lastPos[0], lastPos[1], " ")
+            self.board[tail[0]][tail[1]] = 0
+    
+    def updateSnake(self):
+        head = self.snake.head
+        self.board[head[0]][head[1]] = 1
+        for b in self.snake.body:
+            self.board[b[0]][b[1]] = 2
 
     def generateFood(self):
         i = randint(0, len(self.board) - 1)
         j = randint(0, len(self.board[0]) - 1)
-        while [i, j] in self.snake.body:
+        while [i, j] in self.snake.body or [i, j] == self.snake.head:
             i = randint(0, len(self.board) - 1)
             j = randint(0, len(self.board[0]) - 1) 
-        self.board[i][j] = Position(i, j, "\x1b[0;31;41m \x1b[0m")
-        self.food = self.board[i][j]
-        
-    def updateNeighbors(self):
-        for i in self.board:
-            for j in i:
-                j.neighbors = []
-                # if 0 <= j.i - 1 < len(self.board) and 0 <= j.j < len(self.board[0]):
-                #     j.neighbors.append(self.board[j.i - 1][j.j])
-                # if 0 <= j.i + 1 < len(self.board) and 0 <= j.j < len(self.board[0]):
-                #     j.neighbors.append(self.board[j.i + 1][j.j])
-                # if 0 <= j.i < len(self.board) and 0 <= j.j - 1 < len(self.board[0]):
-                #     j.neighbors.append(self.board[j.i][j.j - 1])
-                # if 0 <= j.i < len(self.board) and 0 <= j.j + 1 < len(self.board[0]):
-                #     j.neighbors.append(self.board[j.i][j.j + 1])
+        self.board[i][j] = 3
+        self.food = [i, j]
 
-                if 0 <= j.i - 1 < len(self.board) and 0 <= j.j < len(self.board[0]):
-                    pos = self.board[j.i - 1][j.j]
-                    if not [pos.i, pos.j] in self.snake.body:
-                        j.neighbors.append(pos)
-                if 0 <= j.i + 1 < len(self.board) and 0 <= j.j < len(self.board[0]):
-                    pos = self.board[j.i + 1][j.j] 
-                    if not [pos.i, pos.j] in self.snake.body:
-                        j.neighbors.append(pos)
-                if 0 <= j.i < len(self.board) and 0 <= j.j - 1 < len(self.board[0]):
-                    pos = self.board[j.i][j.j - 1]
-                    if not [pos.i, pos.j] in self.snake.body:
-                        j.neighbors.append(pos)
-                if 0 <= j.i < len(self.board) and 0 <= j.j + 1 < len(self.board[0]):
-                    pos = self.board[j.i][j.j + 1]
-                    if not [pos.i, pos.j] in self.snake.body:
-                        j.neighbors.append(pos)
+snakeStartLength = 4
+b = Board(30, 20)
+Hpos = int(round(len(b.board))/2)
+Wpos = int(round(len(b.board[0]) - snakeStartLength - 4))
+s = Snake(Hpos, Wpos, snakeStartLength)
+b.setSnake(s)
+b.generateFood()
 
+# Game finishes on exception.
 
-def newBoard(w, h):
-    b = Board(w, h)
-    Hpos = int(round(len(b.board))/2)
-    Wpos = int(round(len(b.board[0])/2))
-    Wpos += int(round(Wpos/2))
-    s = Snake(Hpos, Wpos, Directions.W)
-    b.setSnake(s)
-    return b
+while True:
+    oldPos = b.snake.head
+    b.moveSnake()
+    b.updateSnake()
+    os.system("clear")
+    print(b)
+    time.sleep(0.02)
 
-def newGame():
-    b = newBoard(30, 20)
-    b.updateNeighbors()
-    for i in b.board:
-        for j in i:
-            print(repr(j))
-            print(j.neighbors)
-    while True:
-        nextPos = b.snake.findFood(b.food, b.board)
-        currPos = b.snake.body[0]
-        # if not b.moveSnake():
-        #     print("Perdeu...")
-        #     break
-        # print(str(b.snake.findFood(b.food, b.board)))
-        b.moveSnakeIndex(nextPos)
-        b.updateNeighbors()
-        os.system('cls' if os.name == 'nt' else 'clear')
-        print(str(b))
-        time.sleep(0.05)
-        
-newGame()
+# # Used to run various games one after another to test snake efficiency.
+# points = []
+# while True:
+#     snakeStartLength = 4
+#     b = Board(30, 20)
+#     Hpos = int(round(len(b.board))/2)
+#     Wpos = int(round(len(b.board[0]) - snakeStartLength - 4))
+#     s = Snake(Hpos, Wpos, snakeStartLength)
+#     b.setSnake(s)
+#     b.generateFood()
+#     while True:
+#         try:
+#             oldPos = b.snake.head
+#             b.moveSnake()
+#             b.updateSnake()
+#         except:
+#             points.append(b.points)
+#             break
+#     os.system("clear")
+#     print(str(points))
