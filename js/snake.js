@@ -160,19 +160,3 @@ function addInputToQueue(event) {
 document.onkeydown = function (event) {
     addInputToQueue(event.which);
 };
-
-document.getElementById('btnleft').onclick = function () {
-    addInputToQueue(37);
-};
-document.getElementById('btnup').onclick = function () {
-    addInputToQueue(38);
-};
-document.getElementById('btnright').onclick = function () {
-    addInputToQueue(39);
-};
-document.getElementById('btndown').onclick = function () {
-    addInputToQueue(40);
-};
-document.getElementById('btnreset').onclick = function () {
-    addInputToQueue(32);
-};

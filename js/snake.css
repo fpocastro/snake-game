@@ -20,5 +20,8 @@ canvas {
     min-width: 6em;
     border: 2px solid black;
     border-radius: 1em;
-    background-color: aquamarine
+    background-color: aquamarine;
+}
+.game-control:active {
+    background-color: aqua;
 }
