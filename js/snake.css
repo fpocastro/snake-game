@@ -1,7 +1,24 @@
 body {
     text-align:center;
     font-family: helvetica;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
 }
 canvas {
     border: 2px solid black; 
+}
+.score {
+    font-size: 3em;
+}
+.game-area{
+
+}
+.game-control {
+    font-size: 3em;
+    min-height: 3em;
+    min-width: 6em;
+    border: 2px solid black;
+    border-radius: 1em;
+    background-color: aquamarine
 }

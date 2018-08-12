@@ -6,7 +6,7 @@
 var gameConfig = {
     width: 15,
     height: 15,
-    fps: 100,
+    fps: 300,
     snake: [
         { x: 8, y: 8 },
         { x: 9, y: 8 },
@@ -20,9 +20,17 @@ var gameConfig = {
 
 var canvas, context, scoreBoard, direction, prevDirection, snake, game, food, score, inputQueue;
 reset();
+
 function reset() {
     canvas = document.getElementById('stage');
     context = canvas.getContext("2d");
+    if (window.innerWidth > 1000) {
+        canvas.width = 225;
+        document.getElementById('controls').setAttribute("style", "display: none");
+    } else {
+        canvas.width = window.innerWidth - 30;
+    }
+    canvas.height = canvas.width;
     scoreBoard = document.getElementById('score');
     //context.clearRect(0, 0, canvas.width, canvas.height);
     direction = gameConfig.direction;
@@ -117,7 +125,7 @@ function reset() {
 function drawCell(x, y, color) {
     context.fillStyle = color;
     context.beginPath();
-    context.fillRect((x * gameConfig.width), (y * gameConfig.height), gameConfig.width, gameConfig.height);
+    context.fillRect((x * canvas.width/gameConfig.width), (y * canvas.height/gameConfig.height), canvas.width/gameConfig.width - 1, canvas.height/gameConfig.height - 1);
 };
 
 function generateFood(min, max) {
@@ -136,15 +144,35 @@ function isOnSnake(x, y) {
     return false;
 }
 
-document.onkeydown = function (event) {
-    if (event.which == 32) {
+function addInputToQueue(event) {
+    if (event == 32) {
         // clearInterval(game);
         // reset();
         location.reload();
     }
-    if (gameConfig.allowedInputs.includes(event.which)) {
-        if (inputQueue[inputQueue.length - 1] != event.which) {
-            inputQueue.push(event.which);
+    if (gameConfig.allowedInputs.includes(event)) {
+        if (inputQueue[inputQueue.length - 1] != event) {
+            inputQueue.push(event);
         }
     }
+}
+
+document.onkeydown = function (event) {
+    addInputToQueue(event.which);
+};
+
+document.getElementById('btnleft').onclick = function () {
+    addInputToQueue(37);
+};
+document.getElementById('btnup').onclick = function () {
+    addInputToQueue(38);
+};
+document.getElementById('btnright').onclick = function () {
+    addInputToQueue(39);
+};
+document.getElementById('btndown').onclick = function () {
+    addInputToQueue(40);
+};
+document.getElementById('btnreset').onclick = function () {
+    addInputToQueue(32);
 };

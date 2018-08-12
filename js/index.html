@@ -3,17 +3,42 @@
 
 <head>
     <link rel="stylesheet" href="snake.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
     <title>Snake</title>
 </head>
 
 <body>
-    <div>
-        <canvas id="stage" height="225" width="225"></canvas>
+    <div class="game-area">
+
     </div>
     <div>
-        Score: <span id="score">0</span>
+        <canvas id="stage"></canvas>
+    </div>
+    <div class="score">
+        Score:
+        <span id="score">0</span>
+    </div>
+    <br>
+    <div id="controls">
+        <button type="button" class="game-control" id="btnup">UP</button>
+        <br>
+        <div>
+            <br>
+            <button type="button" class="game-control" style="margin-right: 1em" id="btnleft">LEFT</button>
+            <button type="button" class="game-control" id="btnright">RIGHT</button>
+        </div>
+        <br>
+        <button type="button" class="game-control" id="btndown">DOWN</button>
+        <br>
+        <br>
+        <button type="button" class="game-control" id="btnreset">RESTART</button>
     </div>
 </body>
 
 </html>
 <script type="text/javascript" src="snake.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
