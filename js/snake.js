@@ -14,13 +14,14 @@ var canvas, context, scoreBoard, direction, prevDirection, snake, game, food, sc
 reset();
 
 function reset() {
+    document.getElementById('game-speed').disabled = true;
     canvas = document.getElementById('stage');
     context = canvas.getContext("2d");
     if (window.innerWidth > 1000) {
         canvas.width = 225;
         document.getElementById('controls').setAttribute("style", "display: none");
     } else {
-        canvas.width = window.innerWidth - 30;
+        canvas.width = window.innerWidth - 15;
     }
     canvas.height = canvas.width;
     scoreBoard = document.getElementById('score');
@@ -146,9 +147,9 @@ function isOnSnake(x, y) {
 
 function addInputToQueue(event) {
     if (event == 32) {
-        document.getElementById('game-speed').disabled = true;
         clearInterval(game);
         context.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('game-speed').disabled = true;
         reset();
     }
     if (gameConfig.allowedInputs.includes(event)) {

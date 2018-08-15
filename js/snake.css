@@ -4,25 +4,40 @@ body {
     width: 100%;
     height: 100%;
     margin: 0px;
+    font-size: 1em;
+    padding-top: 5px;
+    background-color: goldenrod;
 }
 canvas {
+    background-color: white;
     border: 2px solid black; 
 }
 .score {
-    font-size: 2em;
+    padding-bottom: 5px
 }
-.game-area{
-
+.direction-inputs {
+    display: flex;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-bottom: .7em;
 }
 .game-control {
     min-height: 3em;
     min-width: 6em;
     border: 2px solid black;
     border-radius: 1em;
+}
+.btn-direction {
     background-color: aquamarine;
 }
-.game-control:active {
+.btn-direction:active {
     background-color: aqua;
+}
+.btn-restart {
+    background-color: red;
+}
+.btn-restart:active {
+    background-color: darkred;
 }
 .game-speed-input {
     width: 5em;

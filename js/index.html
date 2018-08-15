@@ -15,24 +15,29 @@
         <canvas id="stage"></canvas>
     </div>
     <div class="score">
-        Score:
-        <span id="score">0</span>
+        <label>Score:</label>
+        <span id="score" style="margin-right: 1em;">0</span>
+        <label>Speed:</label>
+        <input type="number" value="300" class="game-speed-input" id="game-speed">
     </div>
     <div id="controls">
-        <button type="button" class="game-control" ontouchstart="addInputToQueue(38);">UP</button>
-        <div>
-            <button type="button" class="game-control" style="margin-right: 1em" ontouchstart="addInputToQueue(37);">LEFT</button>
-            <button type="button" class="game-control" ontouchstart="addInputToQueue(39);">RIGHT</button>
+        <div class="direction-inputs">
+            <button type="button" class="game-control btn-direction" ontouchstart="addInputToQueue(37);">LEFT</button>
+            <div>
+                <button type="button" class="game-control btn-direction" style="width: 100%" ontouchstart="addInputToQueue(38);">UP</button>
+                <button type="button" class="game-control btn-direction" style="width: 100%" ontouchstart="addInputToQueue(40);">DOWN</button>
+            </div>
+            <button type="button" class="game-control btn-direction"  ontouchstart="addInputToQueue(39);">RIGHT</button>
+            <br>
+            <br>
         </div>
-        <button type="button" class="game-control" ontouchstart="addInputToQueue(40);">DOWN</button>
-        <br>
-        <br>
-        <button type="button" class="game-control" ontouchstart="addInputToQueue(32);">RESTART</button>
+        <div>
+            <button type="button" class="game-control btn-restart" ontouchstart="addInputToQueue(32);">RESTART</button>
+        </div>
     </div>
     <br>
     <div>
-        <label>Speed:</label>
-        <input type="number" value="300" class="game-speed-input" id="game-speed">
+        
     </div>
 </body>
 
