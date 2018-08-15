@@ -15,7 +15,6 @@ canvas {
 
 }
 .game-control {
-    font-size: 3em;
     min-height: 3em;
     min-width: 6em;
     border: 2px solid black;
@@ -24,4 +23,7 @@ canvas {
 }
 .game-control:active {
     background-color: aqua;
+}
+.game-speed-input {
+    width: 5em;
 }

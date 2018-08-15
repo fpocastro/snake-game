@@ -3,17 +3,9 @@
 //39: right
 //40: down
 
-var gameConfig = {
+const gameConfig = {
     width: 15,
     height: 15,
-    fps: 300,
-    snake: [
-        { x: 8, y: 8 },
-        { x: 9, y: 8 },
-        { x: 10, y: 8 },
-        { x: 11, y: 8 },
-        { x: 12, y: 8 },
-    ],
     direction: 37,
     allowedInputs: [37, 38, 39, 40]
 };
@@ -32,10 +24,16 @@ function reset() {
     }
     canvas.height = canvas.width;
     scoreBoard = document.getElementById('score');
-    //context.clearRect(0, 0, canvas.width, canvas.height);
     direction = gameConfig.direction;
-    snake = gameConfig.snake;
+    snake = [
+        { x: 8, y: 8 },
+        { x: 9, y: 8 },
+        { x: 10, y: 8 },
+        { x: 11, y: 8 },
+        { x: 12, y: 8 },
+    ];
     score = 0;
+    scoreBoard.textContent = score;
     prevDirection = gameConfig.direction;
     inputQueue = [];
 
@@ -89,12 +87,14 @@ function reset() {
 
         if (snake[0].x < 0 || snake[0].x >= gameConfig.width || snake[0].y < 0 || snake[0].y >= gameConfig.height) {
             clearInterval(game);
+            document.getElementById('game-speed').disabled = false;
             return;
         }
 
         for (var i = 1; i < snake.length; i++) {
             if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
                 clearInterval(game);
+                document.getElementById('game-speed').disabled = false;
                 return;
             }
         }
@@ -119,13 +119,13 @@ function reset() {
         }
         drawCell(food.x, food.y, 'rgb(255, 0, 0)');
 
-    }, gameConfig.fps);
+    }, document.getElementById('game-speed').value);
 }
 
 function drawCell(x, y, color) {
     context.fillStyle = color;
     context.beginPath();
-    context.fillRect((x * canvas.width/gameConfig.width), (y * canvas.height/gameConfig.height), canvas.width/gameConfig.width - 1, canvas.height/gameConfig.height - 1);
+    context.fillRect((x * canvas.width / gameConfig.width), (y * canvas.height / gameConfig.height), canvas.width / gameConfig.width - 1, canvas.height / gameConfig.height - 1);
 };
 
 function generateFood(min, max) {
@@ -146,9 +146,10 @@ function isOnSnake(x, y) {
 
 function addInputToQueue(event) {
     if (event == 32) {
-        // clearInterval(game);
-        // reset();
-        location.reload();
+        document.getElementById('game-speed').disabled = true;
+        clearInterval(game);
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        reset();
     }
     if (gameConfig.allowedInputs.includes(event)) {
         if (inputQueue[inputQueue.length - 1] != event) {
