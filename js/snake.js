@@ -15,6 +15,7 @@ reset();
 
 function reset() {
     document.getElementById('game-speed').disabled = true;
+    document.getElementById('btn-restart').setAttribute("style", "display: none;");
     canvas = document.getElementById('stage');
     context = canvas.getContext("2d");
     if (window.innerWidth > 1000) {
@@ -89,6 +90,9 @@ function reset() {
         if (snake[0].x < 0 || snake[0].x >= gameConfig.width || snake[0].y < 0 || snake[0].y >= gameConfig.height) {
             clearInterval(game);
             document.getElementById('game-speed').disabled = false;
+            if (window.innerWidth < 1000) {
+                document.getElementById('btn-restart').setAttribute("style", "");
+            }
             return;
         }
 
@@ -96,6 +100,9 @@ function reset() {
             if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
                 clearInterval(game);
                 document.getElementById('game-speed').disabled = false;
+                if (window.innerWidth < 1000) {
+                    document.getElementById('btn-restart').setAttribute("style", "");
+                }
                 return;
             }
         }

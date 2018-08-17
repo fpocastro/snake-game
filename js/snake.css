@@ -10,10 +10,15 @@ body {
 }
 canvas {
     background-color: white;
-    border: 2px solid black; 
+    border: 2px solid black;
+}
+.canvas-area {
+
 }
 .score {
-    padding-bottom: 5px
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .direction-inputs {
     display: flex;
@@ -22,10 +27,11 @@ canvas {
     margin-bottom: .7em;
 }
 .game-control {
-    min-height: 3em;
+    min-height: 4em;
     min-width: 6em;
     border: 2px solid black;
     border-radius: 1em;
+    width: 33.33%;
 }
 .btn-direction {
     background-color: aquamarine;
