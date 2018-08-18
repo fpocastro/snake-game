@@ -10,7 +10,7 @@ const gameConfig = {
     allowedInputs: [37, 38, 39, 40]
 };
 
-var canvas, context, scoreBoard, direction, prevDirection, snake, game, food, score, inputQueue;
+var canvas, context, scoreBoard, direction, prevDirection, snake, game, food, score, inputQueue, fullGame;
 reset();
 
 function reset() {
@@ -38,12 +38,22 @@ function reset() {
     scoreBoard.textContent = score;
     prevDirection = gameConfig.direction;
     inputQueue = [];
+    fullGame = {
+        snakeMoves: [],
+        score: 0,
+        deadMove: {}
+    };
 
     do {
         food = generateFood(0, gameConfig.height - 1);
     } while (isOnSnake(food.x, food.y))
 
     game = window.setInterval(function () {
+        fullGame.snakeMoves.push({
+            snake: JSON.parse(JSON.stringify(snake)),
+            food: JSON.parse(JSON.stringify(food)),
+            score: score
+        });
         direction = inputQueue.shift() || direction;
         switch (direction) {
             case 37:
@@ -88,21 +98,13 @@ function reset() {
         keyLock = false;
 
         if (snake[0].x < 0 || snake[0].x >= gameConfig.width || snake[0].y < 0 || snake[0].y >= gameConfig.height) {
-            clearInterval(game);
-            document.getElementById('game-speed').disabled = false;
-            if (window.innerWidth < 1000) {
-                document.getElementById('btn-restart').setAttribute("style", "");
-            }
+            endGame();
             return;
         }
 
         for (var i = 1; i < snake.length; i++) {
             if (snake[0].x == snake[i].x && snake[0].y == snake[i].y) {
-                clearInterval(game);
-                document.getElementById('game-speed').disabled = false;
-                if (window.innerWidth < 1000) {
-                    document.getElementById('btn-restart').setAttribute("style", "");
-                }
+                endGame();
                 return;
             }
         }
@@ -150,6 +152,17 @@ function isOnSnake(x, y) {
         }
     }
     return false;
+}
+
+function endGame() {
+    fullGame.score = score;
+    fullGame.deadMove = JSON.parse(JSON.stringify(snake));
+    clearInterval(game);
+    document.getElementById('game-speed').disabled = false;
+    if (window.innerWidth < 1000) {
+        document.getElementById('btn-restart').setAttribute("style", "");
+    }
+    console.log(fullGame);
 }
 
 function addInputToQueue(event) {
