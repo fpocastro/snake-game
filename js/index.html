@@ -6,6 +6,7 @@
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="snake.css">
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <title>Snake</title>
 </head>
 
@@ -21,6 +22,7 @@
         <span id="score" style="padding-right: .5em;">0</span>
         <label>Speed:</label>
         <input type="number" value="300" class="game-speed-input" id="game-speed">
+        <i class="fa fa-pause" style="padding-left: .7em;" ontouchstart="addInputToQueue(80);" id="game-pause"></i>
     </div>
     <div id="controls">
         <div class="direction-inputs">
@@ -29,14 +31,15 @@
                 <button type="button" class="game-control btn-direction" style="width: 100%" ontouchstart="addInputToQueue(38);">UP</button>
                 <button type="button" class="game-control btn-direction" style="width: 100%" ontouchstart="addInputToQueue(40);">DOWN</button>
             </div>
-            <button type="button" class="game-control btn-direction"  ontouchstart="addInputToQueue(39);">RIGHT</button>
+            <button type="button" class="game-control btn-direction" ontouchstart="addInputToQueue(39);">RIGHT</button>
         </div>
         <div>
         </div>
     </div>
-    <div>
-        <button id="btn-restart" type="button" class="game-control btn-restart" ontouchstart="addInputToQueue(32);">RESTART</button>
-    </div>
+    <!-- <div>
+        <button  type="button" class="game-control btn-restart" ontouchstart="addInputToQueue(32);">RESTART</button>
+    </div> -->
+    <i class="fa fa-refresh" ontouchstart="addInputToQueue(32);" id="btn-restart"></i>
 </body>
 
 </html>

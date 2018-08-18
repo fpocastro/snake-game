@@ -45,6 +45,14 @@ canvas {
 .btn-restart:active {
     background-color: darkred;
 }
+.fa-refresh {
+    color: red;
+    font-size: 2em !important;
+}
+.fa-pause {
+    color: blue;
+    font-size: 1.5em;
+}
 .game-speed-input {
-    width: 5em;
+    width: 3em;
 }
