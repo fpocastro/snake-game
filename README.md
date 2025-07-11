@@ -1,2 +1,2 @@
-# py-snake
-Snake game that uses A* search algorithm to move the snake
+# Snake Game
+A simple snake game that work on both keyboard and mobile screen.
